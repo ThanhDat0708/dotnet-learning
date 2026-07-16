@@ -26,31 +26,51 @@ using var db = new AppDBContext();
 //    db.SaveChanges();
 //}\
 // lọc xem trong bảng đã có những sản phẩm này chưa nếu chưa thì thêm vào tránh trường hợp bị trung sản phẩm
-if (!db.Products.Any(x => x.Name == "Chuột không dây"))
+// Data category
+if (!db.Categories.Any(x => x.Name == "Laptop"))
 {
+    db.Categories.Add(new Category { Name = "Laptop" });
+}
+
+if (!db.Categories.Any(x => x.Name == "Mouse"))
+{
+    db.Categories.Add(new Category { Name = "Mouse" });
+}
+
+if (!db.Categories.Any(x => x.Name == "Monitor"))
+{
+    db.Categories.Add(new Category { Name = "Monitor" });
+}
+if (!db.Categories.Any(x=>x.Name =="Keyboard"))
+{
+    db.Categories.Add(new Category { Name = "Keyboard" });
+}
+db.SaveChanges();
+var laptop = db.Categories.First(x => x.Name == "laptop");
     db.Products.Add(new Product
     {
-        Name = "Chuột không dây",
-        Price = 2500
+        Name = "Dell",
+        Price = 2500,
+        Stock = 10,
+        CategoryId = laptop.Id
     });
-}
-if (!db.Products.Any(x => x.Name == "Tai nghe blutooth"))
-{
-    db.Products.Add(new Product
+var mouse = db.Categories.First(x=>x.Name == "mouse");
+db.Products.Add(new Product
     {
-        Name = " tai nghe blutooth",
-        Price = 5000
-    });
-}
-if (!db.Products.Any(x => x.Name == "Màn Hình 24 Inch"))
-{
-    db.Products.Add(new Product
+        Name = "Chuot BlueTooth",
+        Price = 500000,
+        Stock = 20,
+        CategoryId = mouse.Id
+});
+var monitor = db.Categories.First(x => x.Name == "monitor");
+db.Products.Add(new Product
     {
         Name = " Màn hình 24 inch",
-        Price = 400000
-    });
+        Price = 400000,
+        Stock = 3,
+        CategoryId = monitor.Id
+});
  
-}
 db.SaveChanges();
 // Read lây tất cả sản phẩm
 Console.WriteLine("Danh sách tất cả các sản phẩm");
@@ -59,7 +79,7 @@ var products = db.Products.ToList();// lấy danh sách từ database về
 // với mỗi product trong danh sách products in tên nó ra 
 foreach (var product in products)
 {
-    Console.WriteLine($"{product.Id} - {product.Name} - {product.Price:N0} VND");
+    Console.WriteLine($"{product.Id} - {product.Name} -{product.Stock}- {product.Price:N0} VND");
 }
 // Update tìm sản phẩm có id = 1 ròi đổi giá trị nó
 var productUpdate = db.Products.FirstOrDefault(x => x.Id == 1);//  với mỗi sản phẩm x kiểm tra xem id nó có bằng 1 không nếu có thì trả về sản phẩm đó còn không thì trả về null
@@ -160,3 +180,37 @@ Console.WriteLine($"Gia san pham thap nhat {minPrice:N0}");
 //tim gia tri trung binh
 decimal averagePrice = db.Products.Average(x => x.Price);
 Console.WriteLine($"gia tri trung binh {averagePrice:N0} VND");
+
+// Include là dùng để lấy dữ liệu của các bảng có liên quan.
+var  productsinlcude = db.Products
+                  .Include(x=>x.Category)
+                  .ToList();
+foreach(var product in productsinlcude)
+{
+    Console.WriteLine($"{product.Name}-{product.Category.Name}");
+}
+//
+
+var categoris = db.Categories
+    .Include(x=>x.Products)
+    .ToList();
+foreach (var category in categoris)
+{
+    Console.WriteLine($"danh muc:{category.Name}");
+    if (category.Products.Count == 0)
+    {
+        Console.WriteLine("khong co san pham nao");
+
+    }
+    else
+    {
+
+        foreach (var product in category.Products)
+        {
+            Console.WriteLine($"- {product.Name}-{product.Price:N0} VND");
+
+        }
+    }
+}
+
+    
