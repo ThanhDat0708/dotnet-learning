@@ -26,7 +26,9 @@ using var db = new AppDBContext();
 //    db.SaveChanges();
 //}\
 // lọc xem trong bảng đã có những sản phẩm này chưa nếu chưa thì thêm vào tránh trường hợp bị trung sản phẩm
+//Data Supplier
 // Data category
+
 if (!db.Categories.Any(x => x.Name == "Laptop"))
 {
     db.Categories.Add(new Category { Name = "Laptop" });

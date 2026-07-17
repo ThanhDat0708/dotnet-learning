@@ -14,8 +14,10 @@ namespace EfCoreBeginner.Models
         public int Stock { get; set; }
         //khóa ngoại
         public int CategoryId { get; set; }
+        public int SupplierId { get; set; }
 
         //  đây goi là navigation property, nó sẽ giúp mình truy xuất đến category của product này
         public Category Category { get; set; } = null!;
+        public Supplier Supplier { get; set; } = null!;
     }
 }
