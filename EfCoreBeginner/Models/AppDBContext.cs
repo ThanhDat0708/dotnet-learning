@@ -16,8 +16,7 @@ namespace EfCoreBeginner.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                "Server=(localdb)\\MSSQLLocalDB;Database=EfCoreBeginnerDb;Trusted_Connection=True;TrustServerCertificate=True"
-                );
+     "Server=(localdb)\\MSSQLLocalDB;Database=master;Trusted_Connection=True;TrustServerCertificate=True");
         }
     }
 }
