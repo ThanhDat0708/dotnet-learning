@@ -1,8 +1,9 @@
 ﻿using EfCoreBeginner.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 using var db = new AppDBContext();
-Console.WriteLine(db.Database.GetConnectionString());
+//Console.WriteLine(db.Database.GetConnectionString());
 // xóa database nếu nó đã tồn tại và tạo lại database mới
 //db.Database.EnsureDeleted();
 //// tạo database nếu nó chưa tồn tại
@@ -267,5 +268,91 @@ foreach (var category in categoris)
         }
     }
 }
+// hàm count() đếm tổng số sản pham
+ int totalproducts = db.Products.Count();
+Console.WriteLine($"Tổng số sản phẩm: {totalproducts}");
+// dem gia san pham co gia tren 5000
+int count = db.Products.Count(x=>x.Price >=5000);
+Console.WriteLine($"Số sản phẩm có giá trên 5000: {count}");
+// 
+var countByCategory = db.Categories
+    .Include(x => x.Products)
+    .ThenInclude(x => x.Supplier)
+    .ToList();
+foreach (var category in countByCategory)
+    Console.WriteLine($"Danh muc:{category.Name}-{category.Products.Count}san pham");
+//
+var countProduct = db.Products
+    .Include(x => x.Category)
+    .ToList();
+Console.WriteLine(countProduct.Count);
+//bai1
+var countCategories = db.Categories.Count();
+Console.WriteLine($"Tổng số danh mục: {countCategories}");
+//bai2
+var countSuppliers = db.Suppliers.Count();
+ Console.WriteLine($"Tổng số nhà cung cấp: {countSuppliers}");
+//bai 3
+var countToolProducts = db.Products.Count(x => x.Price >= 3000);
+Console.WriteLine($"dem so san pham co gia lon hon 3000{countToolProducts}");
+//bai 4
+var kq = db.Categories
+    .Include(x => x.Products)
+    .ToList();
+foreach (var categorie in kq)
+{
+    Console.WriteLine($"{categorie.Name}co{categorie.Products.Count}san pham");
+    
+}
+// any()
+//bai1
+if (!db.Categories.Any(x => x.Name == "laptop"))
+{
+    Console.WriteLine("Danh mục laptop chưa tồn tại");
+}
+else
+{
+    Console.WriteLine("Danh mục laptop đã tồn tại");
+}
+// bai2
+if (!db.Suppliers.Any(x=>x.Name == "FPT Trading"))
+{
+    Console.WriteLine("Chưa có nhà cung cấp FPT Trading");
+  
+}
+else
+{
+    Console.WriteLine("Đã co cung cấp FPT Trading");
+}
+//bai3
+if(!db.Products.Any(x=>x.Price > 1000000))
+    {
+    Console.WriteLine("khong co gia tren 1 triệu");
+   
+    }
+else
+{
+    foreach (var product in db.Products)
+    {
+        Console.WriteLine($"{product.Name}-{product.Price:N0} VND");
+    }
+}
+//bai4
+if(!db.Products.Any(x=>x.Name == "Dell"))
+{
+    db.Products.Add(new Product
+    {
+        Name = "Dell",
+        Price = 2500,
+        Stock = 10,
+        CategoryId = laptop.Id,
+        SupplierId = fpt.Id
+     
+    });
+    db.SaveChanges();
+}
 
-
+else
+{
+    Console.WriteLine("Đã có sản phẩm Dell");
+}
