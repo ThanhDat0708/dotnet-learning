@@ -356,3 +356,11 @@ else
 {
     Console.WriteLine("Đã có sản phẩm Dell");
 }
+if(!db.Products.All(x=>x.Stock >0))
+{
+    Console.WriteLine($"Có sản phẩm hết hàng");
+}
+else
+    {
+    Console.WriteLine("Tất cả sản phẩm còn hàng");
+}
