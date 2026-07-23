@@ -351,12 +351,14 @@ if(!db.Products.Any(x=>x.Name == "Dell"))
     });
     db.SaveChanges();
 }
-
 else
 {
     Console.WriteLine("Đã có sản phẩm Dell");
 }
-if(!db.Products.All(x=>x.Stock >0))
+
+
+//all khác any là khi có 1 sản phẩm không thõa đk thì kq là false còn any là khi có 1 sản phẩm thõa đk thì kq là true
+if (!db.Products.All(x=>x.Stock >0))
 {
     Console.WriteLine($"Có sản phẩm hết hàng");
 }
@@ -364,3 +366,34 @@ else
     {
     Console.WriteLine("Tất cả sản phẩm còn hàng");
 }
+// firts()
+var firstProduct = db.Products.First();
+Console.WriteLine($"Sản phẩm đầu tiên: {firstProduct.Name}-{firstProduct.Price:N0} VND");
+// first() co dieu kien
+var firstProductWithCondition = db.Products.First(x => x.Price > 1000);
+Console.WriteLine($"Sản phẩm đầu tiên có giá trên 1000: {firstProductWithCondition.Name}-{firstProductWithCondition.Price:N0} VND");
+// lay tat ca SAN PHAM CO GIA TRÊN 1000
+var allproducts = db.Products
+    .Where(x=>x.Price > 1000)
+    .ToList();
+Console.WriteLine("Danh sách sản phẩm có giá trên 1000");
+foreach(var product in allproducts)
+{
+    Console.WriteLine($"{product.Name}-{product.Price:N0} VND");
+}
+// firstorDefault()
+var ktproduct = db.Products.FirstOrDefault(x => x.Name == "MSI");
+if(ktproduct != null)
+{
+    Console.WriteLine($"Sản phẩm MSI có giá: {ktproduct.Price:N0} VND");
+}
+else
+    {
+    Console.WriteLine("Không tìm thấy sản phẩm MSI");
+}
+// single() chỉ có 1 sản phẩm thõa đk còn first() có thể có nhiều sản phẩm thõa đk nhưng nó chỉ lấy sản phẩm đầu tiên
+//var singleProduct = db.Products.Single(x => x.Name == "Dell");
+//Console.WriteLine($"{singleProduct.Name}");
+//singleordefault() cũng giống single() nhưng nếu không có sản phẩm thõa đk thì nó trả về null còn single() thì nó sẽ báo lỗi
+var singleproduct = db.Products.SingleOrDefault(x => x.Name == "Macbook");
+Console.WriteLine(singleproduct != null ? $"Sản phẩm Macbook có giá: {singleproduct.Price:N0} VND" : "Không tìm thấy sản phẩm Macbook");
