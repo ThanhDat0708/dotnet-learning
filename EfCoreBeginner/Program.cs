@@ -397,3 +397,13 @@ else
 //singleordefault() cũng giống single() nhưng nếu không có sản phẩm thõa đk thì nó trả về null còn single() thì nó sẽ báo lỗi
 var singleproduct = db.Products.SingleOrDefault(x => x.Name == "Macbook");
 Console.WriteLine(singleproduct != null ? $"Sản phẩm Macbook có giá: {singleproduct.Price:N0} VND" : "Không tìm thấy sản phẩm Macbook");
+//last
+var lastCategory = db.Categories
+    .OrderBy(x=>x.Id)
+    .Last();
+Console.WriteLine($"Danh muc cuoi cung:{lastCategory.Name}");
+//last có điều kiện
+var lastSupplier = db.Suppliers
+    .OrderBy(x=>x.Id)
+    .Last(x => x.Name == "Petrosetco");
+Console.WriteLine($"{lastSupplier.Name}");
