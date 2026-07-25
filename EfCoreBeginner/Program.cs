@@ -402,8 +402,11 @@ var lastCategory = db.Categories
     .OrderBy(x=>x.Id)
     .Last();
 Console.WriteLine($"Danh muc cuoi cung:{lastCategory.Name}");
-//last có điều kiện
+//last có điều kiện luu ý khi ta viets event last cần có orderby
 var lastSupplier = db.Suppliers
     .OrderBy(x=>x.Id)
     .Last(x => x.Name == "Petrosetco");
 Console.WriteLine($"{lastSupplier.Name}");
+// find dùng để tìm kiếm sản phẩm theo id
+var findProduct = db.Products.Find(1);
+Console.WriteLine($"{findProduct.Name}");
