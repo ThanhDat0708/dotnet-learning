@@ -14,16 +14,18 @@ using var db = new AppDBContext();
 // nếu bảng product không có sản phẩm nào thì thêm bàn phím cơ vào và giá 
 //if (!db.Products.Any())
 //{
-//    db.Products.Add(new Product
-//    {
+//    db.Products.AddRange(
+//    new Product{
+//    
 //        Name = "Bàn phím cơ",
 //        Price = 500000
-//    });
-//    db.Products.Add(new Product
+//    },
+//   new Product
 //    {
 //        Name = "Chuột không dây",
 //        Price = 3000
-//    });
+//    }
+//    );
 
 //    db.SaveChanges();
 //}\
@@ -408,5 +410,64 @@ var lastSupplier = db.Suppliers
     .Last(x => x.Name == "Petrosetco");
 Console.WriteLine($"{lastSupplier.Name}");
 // find dùng để tìm kiếm sản phẩm theo id
-var findProduct = db.Products.Find(1);
-Console.WriteLine($"{findProduct.Name}");
+//var findProduct = db.Products.Find(1);
+//Console.WriteLine($"{findProduct.Name}");
+db.Suppliers.Add(new Supplier
+{
+    Name ="Microsoft",
+    Address = "USA",
+    Phone = "0909999999"
+});
+db.SaveChanges();
+db.Categories.AddRange(
+    new Category
+    {
+        Name = "Phone"
+    },
+    new Category
+    {
+        Name = "Tablet"
+    },
+    new Category
+    { Name = "Printer"}
+    );
+db.SaveChanges();
+//remove
+var removeProduct = db.Products.Find(3);
+if (removeProduct != null)
+
+{
+    db.Products.Remove(removeProduct);
+    db.SaveChanges();
+    Console.WriteLine($"Đã xóa sản phẩm {removeProduct.Name}");
+}
+else
+    {
+    Console.WriteLine("Không tìm thấy sản phẩm để xóa");
+}
+//
+var removeProductsprice = db.Products
+    .Where(x => x.Price > 3000)
+    .ToList();
+if (removeProductsprice.Count > 0)
+    {
+    db.Products.RemoveRange(removeProductsprice);
+    db.SaveChanges();
+    Console.WriteLine($"Đã xóa {removeProductsprice.Count} sản phẩm có giá trên 3000");
+}
+else
+{
+    Console.WriteLine("Không có sản phẩm nào có giá trên 3000 để xóa");
+}
+//bai 3
+var findremoveproduct = db.Products.Find(3);
+if (findremoveproduct == null)
+{
+    Console.WriteLine("Không tìm thấy sản phẩm có id = 3 để xóa");
+}
+else
+{
+    db.Products.Remove(findremoveproduct);
+    db.SaveChanges();
+    Console.WriteLine($"Đã xóa sản phẩm {findremoveproduct.Name}");
+}
