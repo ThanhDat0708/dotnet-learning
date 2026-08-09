@@ -471,3 +471,25 @@ else
     db.SaveChanges();
     Console.WriteLine($"Đã xóa sản phẩm {findremoveproduct.Name}");
 }
+var producutSelect = db.Products
+                       .Where(x => x.Price > 1000)
+                       .Select(x => new
+                       {
+                           productName = x.Name,
+                           productPrice = x.Price
+                       });
+foreach(var product in producutSelect)
+{
+    Console.WriteLine($"Tên sản phẩm: {product.productName}, Giá sản phẩm: {product.productPrice:N0} VND");
+}
+//
+var productTotal = db.Products
+    .Select(x => new
+    {
+        x.Name,
+        TotalValue = x.Price * x.Stock
+    });
+foreach (var product in productTotal)
+    {
+    Console.WriteLine($"Tên sản phẩm: {product.Name}, Tổng giá trị: {product.TotalValue:N0} VND");
+}
