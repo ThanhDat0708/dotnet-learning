@@ -1,5 +1,6 @@
 ﻿using EfCoreBeginner.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 
 using var db = new AppDBContext();
@@ -492,4 +493,115 @@ var productTotal = db.Products
 foreach (var product in productTotal)
     {
     Console.WriteLine($"Tên sản phẩm: {product.Name}, Tổng giá trị: {product.TotalValue:N0} VND");
+}
+//groupby
+var result = db.Products
+    .GroupBy(x => x.CategoryId)
+    .Select(g => new
+    {
+        CategoryId = g.Key,
+        count = g.Count(),
+    })
+    .ToList();
+foreach (var item in result)
+{
+    Console.WriteLine($"Categoris:{item.CategoryId}---So luon:{item.count}");
+}
+var cate = db.Categories
+    .ToList();
+foreach (var category in cate)
+{
+    Console.WriteLine($"Danh sách danh mục và số lượng sản phẩm trong mỗi danh mục:{category.Name}--{category.Id}");
+}
+var pro = db.Products
+    .ToList();
+foreach (var product in pro)
+{
+    Console.WriteLine($"Danh sách sản phẩm và tên danh mục của sản phẩm:{product.Name}");
+}
+var countasync = await db.Products
+                .CountAsync(x=>x.Price>3000);
+Console.WriteLine($"Số sản phẩm có giá trên 3000: {countasync}");
+// anysync()
+var anyasync =  await db.Products.AnyAsync(x=>x.Name == "Dell");
+if (anyasync!= null)
+{
+    Console.WriteLine("Đã có sản phẩm Dell");
+}
+else
+{
+    Console.WriteLine("Chưa có sản phẩm Dell");
+}
+// firstordefaultasync()
+var firsordefaultasync = await db.Products
+    .FirstOrDefaultAsync(x => x.Id == 10);
+if (firsordefaultasync != null)
+    {
+    Console.WriteLine($"Sản phẩm đầu tiên có id = 10: {firsordefaultasync.Name}");
+}
+else
+{
+    Console.WriteLine("Không tìm thấy sản phẩm có id = 10");
+}
+var saveproduct = await db.Products.FindAsync(10);
+
+if (saveproduct != null)
+{
+    saveproduct.Price = 10000;
+    Console.WriteLine($"Đã cập nhật giá sản phẩm có id = 10 thành {saveproduct.Price:N0} VND");
+    await db.SaveChangesAsync();
+}
+else
+    {
+    Console.WriteLine("Không tìm thấy sản phẩm có id = 10 để cập nhật");
+}
+// addsync()
+var newtest =  db.Products.Add(
+    new Product
+    {
+        Name= "Iphone 14",
+        Price = 3000,
+        Stock = 5,
+        CategoryId = 2,
+        SupplierId = 1
+
+    });
+await db.SaveChangesAsync();
+// removesync()
+var removeasync = await db.Products.FindAsync(12);
+if (removeasync !=null)
+{
+    db.Products.Remove(removeasync);
+    await db.SaveChangesAsync();
+    Console.WriteLine($"Đã xóa sản phẩm có id = 12: {removeasync.Name}");
+}else
+    {
+    Console.WriteLine("Không tìm thấy sản phẩm có id = 12 để xóa");
+}
+//removerangeasync()
+var removeasyncrange = await db.Products
+    .Where(x => x.Price > 3000)
+    .ToListAsync();
+if(removeasyncrange.Any())
+{
+    db.Products.RemoveRange(removeasyncrange);
+    await db.SaveChangesAsync();
+    Console.WriteLine("Đã xóa các sản phẩm có giá trên 3000");
+}
+else
+{
+    Console.WriteLine("Không có sản phẩm nào có giá trên 3000 để xóa");
+}
+// include and theninclude async
+var testnew = await db.Categories
+    .Include(x=>x.Products)
+    .ThenInclude(x=>x.Supplier)
+    .ToListAsync();
+foreach ( var category in testnew)
+{
+    Console.WriteLine($"Danh mục: {category.Name}");
+    foreach (var product in category.Products)
+    {
+        Console.WriteLine($"- {product.Name} - {product.Price:N0} VND - Nhà cung cấp: {product.Supplier.Name}");
+    }
 }
