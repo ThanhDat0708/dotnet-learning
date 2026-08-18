@@ -605,3 +605,41 @@ foreach ( var category in testnew)
         Console.WriteLine($"- {product.Name} - {product.Price:N0} VND - Nhà cung cấp: {product.Supplier.Name}");
     }
 }
+//
+var testlast = await db.Products.FindAsync(10);
+if(testlast != null)
+{
+    testlast.Price = 13000;
+    testlast.Stock = 20;
+    Console.WriteLine($"Đã cập nhật sản phẩm có id = 10: {testlast.Name} - Giá: {testlast.Price:N0} VND - Số lượng: {testlast.Stock}");
+
+    await db.SaveChangesAsync();
+}
+else
+{
+    Console.WriteLine("Không tìm thấy sản phẩm có id = 10 để cập nhật");
+}
+// 
+var testlastremove = await db.Products.FindAsync(10);
+if(testlastremove != null)
+{
+    db.Products.Remove(testlastremove);
+    Console.WriteLine($"Đã xóa sản phẩm có id = 10: {testlastremove.Name}");
+    await db.SaveChangesAsync();
+}
+else
+    {
+    Console.WriteLine("Không tìm thấy sản phẩm có id = 10 để xóa");
+}
+//
+var testcreate = new Product
+{
+    Name = "MacBook Air",
+    Price =25000,
+    Stock = 10,
+    CategoryId = 2,
+    SupplierId = 1,
+};
+db.Products.Add(testcreate);
+await db.SaveChangesAsync();
+Console.WriteLine($"Đã thêm sản phẩm mới: {testcreate.Name} - Giá:{testcreate.Price:N0} VND - Số lượng: {testcreate.Stock}");
